@@ -36,7 +36,9 @@ public class PlayerLogic : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col) {
-		if(col.gameObject.name.Equals("success")){
+		if(col.gameObject.name.Equals("success"))
+		{
+			Debug.Log("Succes Pass Blocks");
 			score++;
 			PlayerPrefs.SetInt("lastScore", score);
 			if(score > PlayerPrefs.GetInt("bestScore", 1)){

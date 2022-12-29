@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ColorSwap : MonoBehaviour {
 
-	private Color color;
+	public Color color;
 	private AudioSource changeSound;
 
 	void Start() {
@@ -27,9 +27,11 @@ public class ColorSwap : MonoBehaviour {
 					Renderer rend = hit.collider.gameObject.GetComponent<Renderer>();
 					if (rend.material.GetColor ("_Color").Equals(color)) {
 						hit.collider.isTrigger = true;
+						hit.collider.GetComponent<CubeController>().isEmpty = true;
 						rend.material.SetColor ("_Color", new Color (1, 1, 1, 0.7f));
 					} else {
 						hit.collider.isTrigger = false;
+						hit.collider.GetComponent<CubeController>().isEmpty = false;
 						rend.material.SetColor ("_Color", color);
 					}
 				}

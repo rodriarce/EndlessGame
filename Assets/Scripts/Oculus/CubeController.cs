@@ -39,19 +39,23 @@ public class CubeController : MonoBehaviour
 
     private void GameOver()
     {
+        PlayerLogic.instance.isGameOver = true;
         GameObject.Find("explosionSound").GetComponent<AudioSource>().Play();
         GameObject.Find("Canvas").GetComponent<MenuSelect>().GameOver();
         explosion.transform.parent = null;
         explosion.SetActive(true);
         //Camera.main.transform.parent = null;
-        Destroy(transform.parent.gameObject);
+        //Destroy(transform.parent.gameObject);
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (PlayerLogic.instance.isGameOver)
+        {
+            return;
+        }
         var colliders = Physics.OverlapBox(transform.position, sizeBox, Quaternion.identity, layerBox, QueryTriggerInteraction.Collide);
         
         foreach (var collider in colliders)
@@ -60,11 +64,19 @@ public class CubeController : MonoBehaviour
             {
                 if (collider.transform.GetComponent<ObstacleController>().isFull && isEmpty)
                 {
-                    GameOver();
+                   if (!PlayerLogic.instance.isGameOver)
+                    {
+                        PlayerLogic.instance.GameOver();
+                    }
+                    
                 }
                  else if (!collider.transform.GetComponent<ObstacleController>().isFull && !isEmpty)
                 {
-                    GameOver();
+                    if (!PlayerLogic.instance.isGameOver)
+                    {
+                        PlayerLogic.instance.GameOver();
+                    }
+                    
                 }
 
                 Debug.Log("You hit a box " + collider.transform.name);

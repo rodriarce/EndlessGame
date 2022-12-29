@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuSelect : MonoBehaviour {
 
+	public static MenuSelect instance;
 	public GameObject[] obstacles;
 	public GameObject mainMenuUI;
 	public GameObject gameplayUI;
@@ -33,6 +34,10 @@ public class MenuSelect : MonoBehaviour {
 	private AudioSource buttonClick;
 
 	void Awake() {
+		if (instance == null)
+        {
+			instance = this;
+        }
 		Time.timeScale = 1;
 		Application.targetFrameRate = 300;
 		if(PlayerPrefs.GetInt ("restartTheGame") == 1) {

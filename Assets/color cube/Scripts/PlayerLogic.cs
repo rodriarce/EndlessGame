@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerLogic : MonoBehaviour {
 
 	public static PlayerLogic instance;
-	private Text scoreText;
+	private TextMeshProUGUI scoreText;
 	public float speed = 0.3f;
 	public Rigidbody rb;
 	private AudioSource successSound;
@@ -26,9 +28,9 @@ public class PlayerLogic : MonoBehaviour {
     }
     void Start() {
 		successSound = GameObject.Find("successSound").GetComponent<AudioSource> ();
-		scoreText = GameObject.Find("Canvas").transform.Find("gameplayUI").transform.Find("score").GetComponent<Text>();
+		//scoreText = UIManager.instance.textStats.GetComponent<TextMeshPro>();
 		score = PlayerPrefs.GetInt("lastScore", 0);
-		scoreText.text = "SCORE: " + score;
+		UIManager.instance.textStats.text = "SCORE: " + score;
 		
 
 		if(collision >= 1) {//this is used to check if player crashed and than continued game after watching the ad
@@ -47,10 +49,22 @@ public class PlayerLogic : MonoBehaviour {
     {
 		isGameOver = true;
 		GameObject.Find("explosionSound").GetComponent<AudioSource>().Play();
-		GameObject.Find("Canvas").GetComponent<MenuSelect>().GameOver();
+		//GameObject.Find("Canvas").GetComponent<MenuSelect>().GameOver();
+		//MenuSelect.instance.GameOver();
+		UIManager.instance.panelUI.SetActive(true);
+		UIManager.instance.panelWin.SetActive(false);
+		UIManager.instance.panelLose.SetActive(true);
 		
 		explosionEffect.SetActive(true);
 
+	}
+
+	public void RestartGame()
+	{
+		Debug.Log("Restar Game");
+		DataUser.isReload = true;
+		PlayerPrefs.SetInt("restartTheGame", 1);
+		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 
 	public void OnReloadGame()

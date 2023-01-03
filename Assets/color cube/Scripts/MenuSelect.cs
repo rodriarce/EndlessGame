@@ -81,14 +81,14 @@ public class MenuSelect : MonoBehaviour {
 		{
 			obstacle.GetComponent<Obstacle>().enabled = true;
 		}
-		mainMenuUI.SetActive(false);
-		gameplayUI.SetActive(true);
+		//mainMenuUI.SetActive(false);
+		//gameplayUI.SetActive(true);
 		player.GetComponent<PlayerLogic> ().enabled = true;
 		player.GetComponent<ColorSwap> ().enabled = true;
-		if(buttonClick == null) {
-			buttonClick = GameObject.Find("buttonClickSound").GetComponent<AudioSource>();
-		}
-		buttonClick.Play();
+		//if(buttonClick == null) {
+		//	buttonClick = GameObject.Find("buttonClickSound").GetComponent<AudioSource>();
+		//}
+		//buttonClick.Play();
 	}
 
 	public void GameContinue() {

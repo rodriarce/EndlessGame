@@ -29,8 +29,8 @@ public class Key : MonoBehaviour {
   // [SerializeField]
   protected float m_stroke = 0.001f;
 
-  private int m_numPressingFingers = 0; // the number of objects pressing this key
-  private bool m_isPressing = false;
+  public int m_numPressingFingers = 0; // the number of objects pressing this key
+  public bool m_isPressing = false;
 
   private Transform m_tf;
 
@@ -81,7 +81,45 @@ public class Key : MonoBehaviour {
     }
   }
 
-  void OnTriggerExit(Collider other) {
+    public void OnPressedKey()
+    {
+            m_numPressingFingers += 1;
+            if (m_numPressingFingers > 0)
+            {
+                // prev-state is unpressed.
+                if (m_isPressing == false)
+                {
+                    m_keyboard.Receive(m_char);
+                    // Moving a key collider can call OnTrrigerExit.
+                    // We Enlarge the collider for avoiding this call.
+                    m_collider.size += 2f * m_stroke * Vector3.up;
+                    m_tf.position -= m_stroke * m_tf.up;
+                    if (m_keyTopText != null)
+                    {
+                        m_keyTopText.color = m_pressedColor;
+                    }
+                }
+                m_isPressing = true;
+            }
+        }
+    public void OnReleaseKey()
+        {
+            m_numPressingFingers -= 1;
+            if (m_numPressingFingers == 0)
+            {
+                m_isPressing = false;
+                m_collider.size -= 2f * m_stroke * Vector3.up;
+                m_tf.position += m_stroke * m_tf.up;
+                if (m_keyTopText != null)
+                {
+                    m_keyTopText.color = m_defaultColor;
+                }
+            }
+
+        }
+
+
+        void OnTriggerExit(Collider other) {
     if (other.gameObject.tag == "Stylus") {
       m_numPressingFingers -= 1;
       if (m_numPressingFingers == 0) {

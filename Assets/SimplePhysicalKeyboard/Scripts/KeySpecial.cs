@@ -125,6 +125,80 @@ public class KeySpecial : MonoBehaviour {
       }
     }
   }
+   
+    public void OnEspecialKeyEnter()
+    {
+            m_numPressingFingers += 1;
+            if (m_numPressingFingers > 0)
+            {
+                // prev-state is unpressed.
+                if (m_isPressing == false)
+                {
+                    // m_keyboard.Receive(m_char);
+                    //
+                    switch (m_function)
+                    {
+                        case FUNC.SPACE:
+                            // your function
+                            break;
+                        case FUNC.BACKSPACE:
+                            m_keyboard.BackSpace();
+                            break;
+                        case FUNC.NEWLINE:
+                            m_keyboard.Newline();
+                            break;
+                        case FUNC.RETURN:
+                            // your function
+                            break;
+                        case FUNC.SHIFT:
+                            m_keyboard.SetShift(true);
+                            break;
+                        case FUNC.TAB:
+                            // your function
+                            break;
+                        case FUNC.CAPSLOCK:
+                            m_keyboard.SwitchCapsLock();
+                            break;
+                        case FUNC.SUPER:
+                            // your function
+                            break;
+                    }
+                    if (m_callback != null)
+                    {
+                        m_callback();
+                    }
+                    m_collider.size += 2f * m_stroke * Vector3.up;
+                    m_tf.position -= m_stroke * m_tf.up;
+                    if (m_keyTopText != null)
+                    {
+                        m_keyTopText.color = m_pressedColor;
+                    }
+                }
+                m_isPressing = true;
+            }
+
+        }
+    public void OnEspecialKeyExit()
+   {
+            m_numPressingFingers -= 1;
+            if (m_numPressingFingers == 0)
+            {
+                switch (m_function)
+                {
+                    case FUNC.SHIFT:
+                        m_keyboard.SetShift(false);
+                        break;
+                }
+                m_isPressing = false;
+                m_collider.size -= 2f * m_stroke * Vector3.up;
+                m_tf.position += m_stroke * m_tf.up;
+                if (m_keyTopText != null)
+                {
+                    m_keyTopText.color = m_defaultColor;
+                }
+            }
+
+        }
 
   void OnTriggerExit(Collider other) {
     if (other.gameObject.tag == "Stylus") {

@@ -11,6 +11,7 @@ public class HandController : MonoBehaviour
     public XRRayInteractor rayIntercator;
     public InputActionProperty triggerAction;
     private Transform lastTrigger;
+    private Transform lastTriggerSpecial;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +32,7 @@ public class HandController : MonoBehaviour
     public void OnPressedTrigger(InputAction.CallbackContext contxt)
     {
         lastTrigger = null;
+        lastTriggerSpecial = null;
         if (rayIntercator.TryGetCurrent3DRaycastHit(out RaycastHit rayCasthit))
         {
             if (rayCasthit.transform.CompareTag("box") && triggerAction.action.ReadValue<float>() == 1f)
@@ -43,6 +45,12 @@ public class HandController : MonoBehaviour
                 rayCasthit.transform.GetComponent<BotaLab.Key>().OnPressedKey();
                 Debug.Log("You Presed a Key");
                 lastTrigger = rayCasthit.transform;
+            }
+            if (rayCasthit.transform.CompareTag("keySpecial"))
+            {
+                rayCasthit.transform.GetComponent<BotaLab.KeySpecial>().OnEspecialKeyEnter();
+                Debug.Log("You Presed a Special Key");
+                lastTriggerSpecial = rayCasthit.transform;
             }
 
             //Debug.Log(rayCasthit.transform.tag);
@@ -60,6 +68,14 @@ public class HandController : MonoBehaviour
                 Debug.Log("You Release a  Key");
             }
 
+        }
+        if (lastTriggerSpecial != null)
+        {
+            if (lastTriggerSpecial.CompareTag("keySpecial"))
+            {
+                lastTriggerSpecial.GetComponent<BotaLab.KeySpecial>().OnEspecialKeyExit();
+                Debug.Log("You  Release a special Key");
+            }
         }
             
 

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace BotaLab {
 public class Keyboard : MonoBehaviour {
+
+  public static Keyboard instance;       
   [SerializeField]
   protected Text m_text = null;
 
@@ -29,6 +32,8 @@ public class Keyboard : MonoBehaviour {
   private bool m_CapsLock = false;
 
   private bool m_isShift;
+   public TMP_InputField currentInput;
+  public GameObject keyboard;
 
   public float stroke {
     get {
@@ -62,6 +67,20 @@ public class Keyboard : MonoBehaviour {
     }
   }
 
+
+    public void ShowKeyboard()
+   {
+            keyboard.SetActive(true);
+
+   }
+
+    public void HideKeyboard()
+        {
+            keyboard.SetActive(false);
+        }
+
+
+
   public void Receive(char c) {
     if (m_CapsLock ^ m_isShift) {
       c = char.ToUpper(c);
@@ -69,7 +88,12 @@ public class Keyboard : MonoBehaviour {
       c = char.ToLower(c);
     }
     m_inputedStr += c;
-    UpdateScreen();
+    if (currentInput != null)
+    {
+        currentInput.text = m_inputedStr;
+    }
+    
+    //UpdateScreen();
     PlayTypingSound();
   }
 
@@ -77,31 +101,50 @@ public class Keyboard : MonoBehaviour {
     if (m_inputedStr.Length > 0) {
       m_inputedStr = m_inputedStr.Substring(0, m_inputedStr.Length - len);
     }
-    UpdateScreen();
+    if (currentInput != null)
+    {
+      currentInput.text = m_inputedStr;
+    }
+    
+    //UpdateScreen();
     PlayTypingSound();
+
+
+    
   }
 
   public void Newline() {
     m_inputedStr += "\n";
-    UpdateScreen();
+    
+    if (currentInput != null)
+    {
+          currentInput.text = m_inputedStr;
+    }
+    
+    
+    //UpdateScreen();
     PlayTypingSound();
   }
 
   public void SetShift(bool b) {
     m_isShift = b;
-    UpdateScreen();
+    //UpdateScreen();
     PlayTypingSound();
   }
 
   public void SwitchCapsLock() {
     m_CapsLock = !m_CapsLock;
-    UpdateScreen();
+    //UpdateScreen();
     PlayTypingSound();
   }
 
   void Awake() {
     m_audioSource = GetComponent<AudioSource>();
-    UpdateScreen();
+   // UpdateScreen();
+    if (instance == null)
+    {
+        instance = this;            
+    }
     // Debug.LogFormat("{0}",ColorUtility.ToHtmlStringRGB(m_cursorColor));
   }
 }

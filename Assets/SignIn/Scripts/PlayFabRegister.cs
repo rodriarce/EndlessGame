@@ -67,12 +67,14 @@ public class PlayFabRegister : MonoBehaviour
             if ((PlayerPrefs.HasKey("Email")) && (PlayerPrefs.HasKey("Password")))
             {
                 registerPanel.SetActive(false);
-                LoginWithEmailAddressRequest request = new LoginWithEmailAddressRequest();
-                request.Email = PlayerPrefs.GetString("Email");
-                request.Password = PlayerPrefs.GetString("Password");
+                LoginWithPlayFabRequest request = new LoginWithPlayFabRequest();
+                
+                request.Username = PlayerPrefs.GetString("Email");
+                request.Password = PlayerPrefs.GetString("Password");              
+                
                 emailLogin.text = PlayerPrefs.GetString("Email");// Set UserName And Password Text
                 passwordLogin.text = PlayerPrefs.GetString("Password");
-                PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginResult, OnLoginError);
+                PlayFabClientAPI.LoginWithPlayFab(request, OnLoginResult, OnLoginError);
 
 
             }
@@ -97,19 +99,14 @@ public class PlayFabRegister : MonoBehaviour
 
     public void RegisterUser()
     {
-
-        if (passwordInput.text != confirmPassword.text)
-        {
-            panelErrorRegister.SetActive(true);
-            textErrorRegister.text = "Put the same Password";
-            return;
-        }
+             
+             
 
         RegisterPlayFabUserRequest request = new RegisterPlayFabUserRequest();
         request.TitleId = titleId;
         request.Username = userNameInput.text;
         request.Password = passwordInput.text;
-        request.Email = emailInput.text;
+        request.RequireBothUsernameAndEmail = false;        
         userName = userNameInput.text;// Set Variable Names And Password
         passwordText = passwordInput.text;
         emailText = emailInput.text;
@@ -142,6 +139,11 @@ public class PlayFabRegister : MonoBehaviour
         textErrorRegister.text = "";
         panelErrorRegister.SetActive(true);
         var newError = error.ErrorDetails;
+
+        if (newError == null)
+        {
+            textErrorRegister.text = "Empty user name or password";
+        }
         foreach (var myKey in newError)
         {
             Debug.Log(myKey.Key);
@@ -181,24 +183,17 @@ public class PlayFabRegister : MonoBehaviour
 
     public void OnClickLogin()
     {
-        LoginWithEmailAddressRequest request = new LoginWithEmailAddressRequest();
-        request.Email = emailLogin.text;
+        LoginWithPlayFabRequest request = new LoginWithPlayFabRequest();
+        request.Username = emailLogin.text;
         userName = emailLogin.text;
         request.Password = passwordLogin.text;
         passwordText = passwordLogin.text;
-        PlayFabClientAPI.LoginWithEmailAddress(request, OnResultClick, ErrorLogin);
+        PlayFabClientAPI.LoginWithPlayFab(request, OnResultClick, ErrorLogin);
     }
 
     private void OnResultClick(LoginResult result)
     {
-        if (toggleOption.enabled)
-        {
-            isWithPlayerPref = true;
-        }
-        else
-        {
-            isWithPlayerPref = false;
-        }
+       
 
         if (isWithPlayerPref)
         {
@@ -228,14 +223,14 @@ public class PlayFabRegister : MonoBehaviour
         panelErrorLogin.SetActive(true);
         if (error.ErrorMessage == "User not found")
         {
-            textErrorLogin.text = "Wrong Email or Password";
+            textErrorLogin.text = "Wrong User Name Or Password";
             return;
         }
         
         var newError = error.ErrorDetails;
         if (newError == null)
         {
-            textErrorLogin.text = "Wrong Email or Password";
+            textErrorLogin.text = "Wrong User Name or Password";
             return;
         }
         foreach (var myKey in newError)

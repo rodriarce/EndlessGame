@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 
 
@@ -11,7 +13,7 @@ using UnityEngine.SceneManagement;
 public class PlayFabRegister : MonoBehaviour
 {
     [Header("PlayFab TitleId")]
-    public string titleId;
+    private string titleId = "60751";
 
     [Header("Input Register")]
     public TMP_InputField userNameInput;
@@ -29,6 +31,7 @@ public class PlayFabRegister : MonoBehaviour
     [Header("Text Error")]
     public TextMeshProUGUI textErrorRegister;
     public TextMeshProUGUI textErrorLogin;
+    public TextMeshProUGUI textSuccesLogin;
     [Header("Panels")]
     public GameObject registerPanel;
     public GameObject loginPanel;
@@ -38,6 +41,7 @@ public class PlayFabRegister : MonoBehaviour
     public GameObject succesRegister;
     private bool isWithPlayerPref;
     public string nameScene;
+    public Button buttonLogin;
     
     
 
@@ -49,8 +53,18 @@ public class PlayFabRegister : MonoBehaviour
     }
     private void Start()
     {
-        LoginStartUser();
+        buttonLogin.interactable = false;
+        if (PlayerPrefs.HasKey("Email"))
+        {
+           
+            LoginStartUser();
+        }
+        else
+        {
+            succesLogin.SetActive(false);
+        }
 
+        
     }
 
     // Update is called once per frame
@@ -62,12 +76,13 @@ public class PlayFabRegister : MonoBehaviour
     {
         isWithPlayerPref = true;
 
-        if (isWithPlayerPref)
-        {
+      
             if ((PlayerPrefs.HasKey("Email")) && (PlayerPrefs.HasKey("Password")))
             {
+                textSuccesLogin.text = "Connecting..";
                 registerPanel.SetActive(false);
-                LoginWithPlayFabRequest request = new LoginWithPlayFabRequest();
+                buttonLogin.interactable = false;
+                LoginWithPlayFabRequest request = new LoginWithPlayFabRequest();                
                 
                 request.Username = PlayerPrefs.GetString("Email");
                 request.Password = PlayerPrefs.GetString("Password");              
@@ -77,20 +92,56 @@ public class PlayFabRegister : MonoBehaviour
                 PlayFabClientAPI.LoginWithPlayFab(request, OnLoginResult, OnLoginError);
 
 
-            }
-            
-        }
+            }           
+       
 
 
+    }
+    public void LoadScene()
+    {
+        SceneManager.LoadScene("GamePlay");
     }
     private void OnLoginResult(LoginResult result)
     {
         succesLogin.SetActive(true);
-        succesLogin.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Login";
+        //succesLogin.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Login";
+       
         Debug.Log("Login Succes");
-        
+        GetPlayerStats();
 
     }
+
+
+    public void GetPlayerStats()
+    {
+        GetPlayerStatisticsRequest request = new GetPlayerStatisticsRequest();
+        request.StatisticNames = new List<string>() { "Points" };
+        PlayFabClientAPI.GetPlayerStatistics(request, OnResultGetStats, error => { Debug.Log("Error Get Player Stats"); });
+        
+        //LoadScene();
+
+    }
+
+    private void OnResultGetStats(GetPlayerStatisticsResult result)
+    {
+        if (result.Statistics.Count > 0)
+        {
+            foreach (var stat in result.Statistics)
+            {
+                if (stat.StatisticName == "Points")
+                {
+                    DataUser.amountPoints = stat.Value;
+                }
+            }
+        }
+        //LoadScene();
+        textSuccesLogin.text = "Ready!";
+        buttonLogin.interactable = true;
+        
+    }
+
+
+
     private void OnLoginError(PlayFabError error)
     {
         Debug.Log(error.GenerateErrorReport());
@@ -106,7 +157,8 @@ public class PlayFabRegister : MonoBehaviour
         request.TitleId = titleId;
         request.Username = userNameInput.text;
         request.Password = passwordInput.text;
-        request.RequireBothUsernameAndEmail = false;        
+        request.RequireBothUsernameAndEmail = false;
+        request.DisplayName = userNameInput.text;
         userName = userNameInput.text;// Set Variable Names And Password
         passwordText = passwordInput.text;
         emailText = emailInput.text;
@@ -126,7 +178,7 @@ public class PlayFabRegister : MonoBehaviour
 
         }
         succesRegister.SetActive(true);
-        succesRegister.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Sign In";
+        //succesRegister.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Sign In";
 
        
     }
@@ -183,6 +235,9 @@ public class PlayFabRegister : MonoBehaviour
 
     public void OnClickLogin()
     {
+        succesLogin.SetActive(true);
+        textSuccesLogin.text = "Connecting..";
+        buttonLogin.interactable = false;
         LoginWithPlayFabRequest request = new LoginWithPlayFabRequest();
         request.Username = emailLogin.text;
         userName = emailLogin.text;
@@ -195,14 +250,14 @@ public class PlayFabRegister : MonoBehaviour
     {
        
 
-        if (isWithPlayerPref)
-        {
-            PlayerPrefs.SetString("Email", userName);
-            PlayerPrefs.SetString("Password", passwordText);
-        }
-        
-        succesLogin.SetActive(true);
-        succesLogin.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Login";
+    PlayerPrefs.SetString("Email", userName);
+    PlayerPrefs.SetString("Password", passwordText);
+
+
+        //succesLogin.SetActive(true);
+        //succesLogin.GetComponentInChildren<TextMeshProUGUI>().text = "Succes Login";
+        GetPlayerStats();
+        //buttonLogin.interactable = true;
         Debug.Log("Login Succes");
     }
 
@@ -246,19 +301,6 @@ public class PlayFabRegister : MonoBehaviour
 
 
     }
-
-
-    public void LoadScene(string nameScene)
-    {
-        if (nameScene == "")
-        {
-            return;
-        }
-        else
-        {
-            SceneManager.LoadScene(nameScene);
-        }
-
-    }
+   
 
 }

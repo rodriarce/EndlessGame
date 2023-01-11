@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using PlayFab;
+using PlayFab.ClientModels;
+
 
 public class PlayerLogic : MonoBehaviour {
 
@@ -93,14 +96,23 @@ public class PlayerLogic : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col) {
-		if(col.gameObject.name.Equals("success"))
-		{
-			Debug.Log("Succes Pass Blocks");
-			score++;
-			PlayerPrefs.SetInt("lastScore", score);
-			if(score > PlayerPrefs.GetInt("bestScore", 1)){
-				PlayerPrefs.SetInt("bestScore", score);
-			}
+        if (col.gameObject.name.Equals("success"))
+        {
+            Debug.Log("Succes Pass Blocks");
+            score++;
+            PlayerPrefs.SetInt("lastScore", score);
+            if (score > PlayerPrefs.GetInt("bestScore", 1)) {
+                PlayerPrefs.SetInt("bestScore", score);
+            }
+            var playerStatistics = new UpdatePlayerStatisticsRequest();
+            StatisticUpdate stat = new StatisticUpdate();
+            stat.StatisticName = "Points";
+            stat.Value = score;
+            playerStatistics.Statistics = new List<StatisticUpdate>()
+            {
+                stat,
+            };
+            PlayFabClientAPI.UpdatePlayerStatistics(playerStatistics, result => { Debug.Log("Succes Update Stat"); }, error => { Debug.Log(error.GenerateErrorReport());});
 			scoreText.text = "SCORE: " + score;
 			GameObject newObstacle = Instantiate (Resources.Load ("obstacle") as GameObject);
 			newObstacle.transform.parent = GameObject.Find("obstacles").transform;

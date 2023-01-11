@@ -5,4 +5,5 @@ using UnityEngine;
 public static class DataUser 
 {
     public static bool isReload;
+    public static int amountPoints;
 }

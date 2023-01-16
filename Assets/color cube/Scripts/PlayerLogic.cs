@@ -11,7 +11,7 @@ using PlayFab.ClientModels;
 public class PlayerLogic : MonoBehaviour {
 
 	public static PlayerLogic instance;
-	private TextMeshProUGUI scoreText;
+	public TextMeshProUGUI scoreText;
 	public float speed = 0.3f;
 	public Rigidbody rb;
 	private AudioSource successSound;
@@ -101,19 +101,23 @@ public class PlayerLogic : MonoBehaviour {
             Debug.Log("Succes Pass Blocks");
             score++;
             PlayerPrefs.SetInt("lastScore", score);
-            if (score > PlayerPrefs.GetInt("bestScore", 1)) {
+            if (score > DataUser.amountPoints) {
                 PlayerPrefs.SetInt("bestScore", score);
-            }
-            var playerStatistics = new UpdatePlayerStatisticsRequest();
-            StatisticUpdate stat = new StatisticUpdate();
-            stat.StatisticName = "Points";
-            stat.Value = score;
-            playerStatistics.Statistics = new List<StatisticUpdate>()
+                var playerStatistics = new UpdatePlayerStatisticsRequest();
+                StatisticUpdate stat = new StatisticUpdate();
+                stat.StatisticName = "Points";
+                stat.Value = score;
+                DataUser.amountPoints = score;
+                playerStatistics.Statistics = new List<StatisticUpdate>()
             {
                 stat,
             };
-            PlayFabClientAPI.UpdatePlayerStatistics(playerStatistics, result => { Debug.Log("Succes Update Stat"); }, error => { Debug.Log(error.GenerateErrorReport());});
-			scoreText.text = "SCORE: " + score;
+                PlayFabClientAPI.UpdatePlayerStatistics(playerStatistics, result => { Debug.Log("Succes Update Stat"); }, error => { Debug.Log(error.GenerateErrorReport()); });
+                UIManager.instance.textBestScore.text = "SCORE: " + DataUser.amountPoints.ToString();
+
+            }
+           
+			scoreText.text = score.ToString();
 			GameObject newObstacle = Instantiate (Resources.Load ("obstacle") as GameObject);
 			newObstacle.transform.parent = GameObject.Find("obstacles").transform;
 			newObstacle.transform.localPosition = new Vector3(0,0.55f, (score + collision) * 100 + 100);

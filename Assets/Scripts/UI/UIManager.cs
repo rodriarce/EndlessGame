@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     public GameObject panelWin;
     public GameObject panelLose;
     public Button playAgainButton;
+    public TextMeshProUGUI textBestScore;
     private void Awake()
     {
         if (instance == null)
@@ -31,6 +32,7 @@ public class UIManager : MonoBehaviour
             panelWin.SetActive(false);            
             OnButtonPlay();
         }
+        textBestScore.text = "SCORE: " + DataUser.amountPoints.ToString();
         
     }
     private void OnButtonPlay()

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 public class PlayFabRegister : MonoBehaviour
 {
+    public static PlayFabRegister instance;
     [Header("PlayFab TitleId")]
     private string titleId = "60751";
 
@@ -49,7 +50,10 @@ public class PlayFabRegister : MonoBehaviour
 
     private void Awake()
     {
-        
+        if (instance == null)
+        {
+            instance = this;
+        }
     }
     private void Start()
     {
@@ -136,7 +140,8 @@ public class PlayFabRegister : MonoBehaviour
         }
         //LoadScene();
         textSuccesLogin.text = "Ready!";
-        buttonLogin.interactable = true;
+        PlayFabLeaderboard.instance.GetLeaderBoardData();
+        //buttonLogin.interactable = true;
         
     }
 

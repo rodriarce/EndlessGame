@@ -33,7 +33,7 @@ public class PlayerLogic : MonoBehaviour {
 		successSound = GameObject.Find("successSound").GetComponent<AudioSource> ();
 		//scoreText = UIManager.instance.textStats.GetComponent<TextMeshPro>();
 		score = PlayerPrefs.GetInt("lastScore", 0);
-		UIManager.instance.textStats.text = "SCORE: " + score;
+		UIManager.instance.textStats.text = score.ToString();
 		
 
 		if(collision >= 1) {//this is used to check if player crashed and than continued game after watching the ad

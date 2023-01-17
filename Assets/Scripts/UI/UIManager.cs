@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+
+
+
+
+
 
 public class UIManager : MonoBehaviour
 {
@@ -26,7 +32,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         buttonPlay.onClick.AddListener(() => {OnButtonPlay() ; });
-        playAgainButton.onClick.AddListener(() => { PlayerLogic.instance.RestartGame();});
+       playAgainButton.onClick.AddListener(() => { PlayerLogic.instance.RestartGame();});
         if (DataUser.isReload)
         {
             panelWin.SetActive(false);            
@@ -34,6 +40,14 @@ public class UIManager : MonoBehaviour
         }
         textBestScore.text = "SCORE: " + DataUser.amountPoints.ToString();
         
+    }
+    public void OnRestartButton()
+    {
+        PlayerLogic.instance.RestartGame();
+    }
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene("Login");
     }
     private void OnButtonPlay()
     {

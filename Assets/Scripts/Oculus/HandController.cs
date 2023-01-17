@@ -8,10 +8,16 @@ using BotaLab;
 
 public class HandController : MonoBehaviour
 {
+       
     public XRRayInteractor rayIntercator;
     public InputActionProperty triggerAction;
     private Transform lastTrigger;
     private Transform lastTriggerSpecial;
+
+    private void Awake()
+    {
+        
+    }
 
     // Start is called before the first frame update
     void Start()

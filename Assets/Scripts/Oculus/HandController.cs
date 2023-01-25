@@ -45,6 +45,7 @@ public class HandController : MonoBehaviour
             {
                 Debug.Log("You Hit a Box");
                 rayCasthit.transform.GetComponent<CubeController>().SelectEnter();
+                ColorSwap.instance.changeSound.Play();
             }
             if (rayCasthit.transform.CompareTag("Key"))
             {

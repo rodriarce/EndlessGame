@@ -4,10 +4,20 @@ using UnityEngine;
 
 public class ColorSwap : MonoBehaviour {
 
+    public static ColorSwap instance;
 	public Color color;
-	private AudioSource changeSound;
+	public AudioSource changeSound;
 
-	void Start() {
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
+
+    void Start() {
 		color = new Color (0, 0.7f, 1, 1);
 		changeSound = GameObject.Find("colorChangeSound").GetComponent<AudioSource> ();
 		Renderer[] kocke = GetComponentsInChildren<Renderer> ();

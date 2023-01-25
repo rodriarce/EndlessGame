@@ -44,7 +44,7 @@ public class PlayerLogic : MonoBehaviour {
 			GameObject newFloor = Instantiate (Resources.Load ("floor") as GameObject);
 			newFloor.transform.parent = GameObject.Find("floorPlanes").transform;
 			newFloor.transform.localPosition = new Vector3(0,0.55f, (score + collision) * 100);
-			speed = 0.3f + ((float)score / 100);
+			speed = 0.3f + ((float)score / 70);
 		}
 	}
 

@@ -1,2 +1,9 @@
 fileFormatVersion: 2
-guid: 379cfb9659212474f939f76a8083a9ca
+guid: ee03c8be9d6ed144da890adccc3eb20e
+labels:
+- oculus_interaction_deprecated
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

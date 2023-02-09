@@ -20,18 +20,22 @@ public class UIInputField : MonoBehaviour
         TMP_InputField.SelectionEvent deselectEvent = new TMP_InputField.SelectionEvent();
         deselectEvent.AddListener(OnDeselectInput);
         inputField.onSelect = selectEvent;
+        inputField.onDeselect = deselectEvent;
     }
 
     public void OnSelectInput(string inputData)
     {
         //keyboard = TouchScreenKeyboard.Open("");
+        //Keyboard.instance.currentInput.text = string.Empty;
+        Keyboard.instance.m_inputedStr = string.Empty;
+        Keyboard.instance.currentInput = null;
         Keyboard.instance.ShowKeyboard();
         Keyboard.instance.currentInput = inputField;
     }
     public void OnDeselectInput(string inputData)
     {
-        Keyboard.instance.HideKeyboard();
-        Keyboard.instance.currentInput = null;
+        //Keyboard.instance.HideKeyboard();
+        
     }
 
     // Update is called once per frame

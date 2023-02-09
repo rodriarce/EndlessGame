@@ -11,7 +11,7 @@ public class Keyboard : MonoBehaviour {
   [SerializeField]
   protected Text m_text = null;
 
-  private string m_inputedStr = "";
+  public string m_inputedStr = "";
 
   [SerializeField]
   protected char m_cursor = '_';
